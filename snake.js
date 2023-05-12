@@ -1,18 +1,20 @@
 export default class Snake {
     #snake
+    #food
     #map
-    snakeDelay = 150
     #delayIsOver = true
-    snakeDiameter = 50
+    static snakeDiameter = 50
+    static snakeDelay = 150
 
-    constructor(map) {
+    constructor(map, food) {
         this.#map = map
+        this.#food = food
     }
 
     initSnake() {
         this.#snake = document.querySelector('#snake')
-        this.#snake.style.width = this.snakeDiameter + 'px'
-        this.#snake.style.height = this.snakeDiameter + 'px'
+        this.#snake.style.width = Snake.snakeDiameter + 'px'
+        this.#snake.style.height = Snake.snakeDiameter + 'px'
     }
 
     getSnakeCords() {
@@ -35,7 +37,7 @@ export default class Snake {
 
         return setInterval(() => {
             if (this.#delayIsOver) {
-                
+
                 this.#delayIsOver = false
 
                 switch (key) {
@@ -57,7 +59,25 @@ export default class Snake {
                         break;
                 }
             }
-            this.#delayIsOver = true 
-        }, this.snakeDelay);
+
+            this.compareFoodCords(cords, this.#food.cords)
+
+            this.#delayIsOver = true
+        }, Snake.snakeDelay);
+    }
+
+    compareFoodCords(snakeCords, foodCords) {
+        if (snakeCords.x === foodCords.x && snakeCords.y === foodCords.y) {
+            console.log('you have just eaten food');
+
+            this.eatFood(foodCords)
+        }
+    }
+
+    eatFood(foodCords) {
+        //add point
+        this.#food.deleteFood(foodCords)
+        this.#food.generateFoodCords()
+        this.#food.addFood()
     }
 }

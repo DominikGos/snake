@@ -4,24 +4,31 @@ export default class Food {
         x: null,
         y: null
     }
+    #snakeDiameter
 
-    constructor(map) {
+    constructor(map, snakeDiameter) {
         this.#map = map 
+        this.#snakeDiameter = snakeDiameter
     }
 
     addFood() {
+        const foodId = `${this.cords.x} ${this.cords.y}`
         const food = `
-            <div class="food bg-success rounded-3" style="top: ${this.cords.y}px; left: ${this.cords.x}px;"></div>
+            <div data-food-id="${foodId}" class="food bg-success rounded-3" style="top: ${this.cords.y}px; left: ${this.cords.x}px;"></div>
         `
-
         this.#map.insertAdjacentHTML('afterBegin', food)
     }
 
-    generateFoodCords(snakeDiameter) {
+    generateFoodCords() {
         const mapDiameter = this.#map.offsetWidth
-        this.cords.x = snakeDiameter * Math.floor(Math.random() * mapDiameter / snakeDiameter);
-        this.cords.y = snakeDiameter * Math.floor(Math.random() * mapDiameter / snakeDiameter);
+        this.cords.x = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
+        this.cords.y = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
+    }
 
-        console.log( this.cords);
+    deleteFood(cords) {
+        const foodId = `${cords.x} ${cords.y}`
+
+        const food = document.querySelector(`[data-food-id="${foodId}"]`);
+        food.remove();
     }
 }
