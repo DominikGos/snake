@@ -3,6 +3,7 @@ export default class Snake {
     #map
     snakeDelay = 150
     #delayIsOver = true
+    snakeDiameter = 50
 
     constructor(map) {
         this.#map = map
@@ -10,6 +11,8 @@ export default class Snake {
 
     initSnake() {
         this.#snake = document.querySelector('#snake')
+        this.#snake.style.width = this.snakeDiameter + 'px'
+        this.#snake.style.height = this.snakeDiameter + 'px'
     }
 
     getSnakeCords() {

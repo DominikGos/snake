@@ -1,6 +1,8 @@
 import Snake from './snake.js';
+import Food from './food.js'
 
 const map = document.querySelector('#map');
+const food = new Food(map)
 const snake = new Snake(map)
 snake.initSnake()
 let intervalId = null
@@ -9,6 +11,8 @@ let timeElapsed = null
 let start = null
 let end = null 
 
+food.generateFoodCords(snake.snakeDiameter);
+food.addFood()
 document.addEventListener('keydown', function (e) {
     end = Date.now();
     
