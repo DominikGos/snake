@@ -10,3 +10,23 @@
     height: 50px;
     position: absolute;
 }
+
+.food {
+    opacity: 0;
+    box-sizing: border-box;
+    padding: 10px;
+    animation-name: foodAppeared;
+    animation-duration: .2s;
+    animation-delay: .2s;
+    animation-fill-mode:forwards ;
+}
+
+@keyframes foodAppeared {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
