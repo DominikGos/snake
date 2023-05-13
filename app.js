@@ -16,23 +16,24 @@ food.addFood()
 
 document.addEventListener('keydown', function (e) {
     end = Date.now();
-    
+    const keys = {
+        current: e.key,
+        previous: previousKey
+    }
+
     if(start === null) {
         timeElapsed = Snake.snakeDelay + 1
     } else {
         timeElapsed = end - start;
     }
     
-    if(timeElapsed > Snake.snakeDelay) { //if time is less than delay, just wait and make move
-        if (intervalId && e.key !== previousKey) {
-            clearInterval(intervalId)
-            intervalId = snake.moveSnake(e.key)
-        } else if (intervalId === null) {
-            intervalId = snake.moveSnake(e.key)
-        }
-        
-        previousKey = e.key
+    let snakeCords = snake.getSnakeCords()
+
+    if (intervalId) {
+        clearInterval(intervalId)
     } 
-    
+
+    intervalId = snake.moveSnake(keys, snakeCords)
+    previousKey = e.key
     start = Date.now();
 });
