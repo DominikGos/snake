@@ -16,11 +16,11 @@ export default class Food {
         const food = `
             <div data-food-id="${foodId}" class="food bg-success rounded-3" style="top: ${this.cords.y}px; left: ${this.cords.x}px;"></div>
         `
-        this.#map.insertAdjacentHTML('afterBegin', food)
+        this.#map.map.insertAdjacentHTML('afterBegin', food)
     }
 
     generateFoodCords() {
-        const mapDiameter = this.#map.offsetWidth
+        const mapDiameter = this.#map.map.offsetWidth
         this.cords.x = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
         this.cords.y = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
     }
