@@ -66,6 +66,7 @@ export default class Snake {
             this.#keys.previous = key 
             this.setSnakeCords(cords)
             this.compareFoodCords(cords, this.#food.cords)
+            this.#map.checkIfSnakeDied(cords)
         }, Snake.snakeDelay);
     }
 
