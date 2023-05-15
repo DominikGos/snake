@@ -2,10 +2,13 @@ export default class Snake {
     #snake
     #food
     #map
-    snakeCanChangeDirection = true
+    #keys = {
+        previous: null,
+        current: null
+    }
     static snakeDiameter = 50
-    static snakeDelay = 20
-    static snakeSpeed = 5
+    static snakeDelay = 10
+    static snakeSpeed = 2
 
     constructor(map, food) {
         this.#map = map
@@ -33,45 +36,44 @@ export default class Snake {
         this.#snake.style.left = cords.x + 'px';
     }
 
-    moveSnake(keys, cords) {
+    moveSnake(key, cords) {
         let nextKey = null
-        let key = null
-        
+        this.#keys.current = key 
+
         return setInterval(() => {
 
             if (this.checkIfSnakeCanChangeDirection(cords)) {
                 if (nextKey)
                     key = nextKey
                 else
-                    key = keys.current
+                    key = this.#keys.current
             } else {
-                if (!nextKey) {
-                    key = keys.previous
-                        ? key = keys.previous
-                        : key = keys.current
+                if( ! nextKey) {
+                    key = this.#keys.previous
+                        ? key = this.#keys.previous
+                        : key = this.#keys.current
 
-                    nextKey = keys.current
-                } 
+                    nextKey = this.#keys.current
+                }
             }
 
             switch (key) {
                 case 'a':
                     cords.x -= Snake.snakeSpeed
-                    this.setSnakeCords(cords)
                     break;
                 case 'w':
                     cords.y -= Snake.snakeSpeed
-                    this.setSnakeCords(cords)
                     break;
                 case 's':
                     cords.y += Snake.snakeSpeed
-                    this.setSnakeCords(cords)
                     break;
                 case 'd':
                     cords.x += Snake.snakeSpeed
-                    this.setSnakeCords(cords)
                     break;
             }
+
+            this.#keys.previous = key 
+            this.setSnakeCords(cords)
             this.compareFoodCords(cords, this.#food.cords)
         }, Snake.snakeDelay);
     }
@@ -101,7 +103,6 @@ export default class Snake {
             (cords.y === 0 && moduloXisCorrect) ||
             (moduloXisCorrect && moduloYisCorrect)
         ) {
-            // console.log('now you can change direction');
             return true
         }
 
