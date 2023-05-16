@@ -1,11 +1,14 @@
 import Map from './map.js';
 import Snake from './snake.js';
 import Food from './food.js'
+import Point from './point.js';
 
 const map = new Map;
 map.initMap()
+const point = new Point
+point.initPointCounter() 
 const food = new Food(map, Snake.snakeDiameter)
-const snake = new Snake(map, food)
+const snake = new Snake(map, food, point)
 snake.initSnake()
 let intervalId = null
 let gameIsLost = false
@@ -14,7 +17,6 @@ food.generateFoodCords(Snake.snakeDiameter);
 food.addFood()
 const modalButton = document.querySelector('#modalButton')
 const resetButton = document.querySelector('#resetButton')
-modalButton.style.display = 'none'
 
 document.addEventListener('keydown', function (e) {
     if( ! gameIsLost) {
@@ -32,12 +34,12 @@ map.map.addEventListener('snakeDied', function(e) {
     gameIsLost = true
     clearInterval(intervalId)
     myModal.show()
-    modalButton.style.display = 'block'
 })
 
 resetButton.addEventListener('click', resetGame)
 
 function resetGame() {
+    point.resetPoints()
     snake.setSnakeCords({x: 0, y: 0})
     gameIsLost = false
     myModal.hide()

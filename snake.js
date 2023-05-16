@@ -2,6 +2,7 @@ export default class Snake {
     #snake
     #food
     #map
+    #point
     #keys = {
         previous: null,
         current: null
@@ -10,9 +11,10 @@ export default class Snake {
     static snakeDelay = 10
     static snakeSpeed = 5
 
-    constructor(map, food) {
+    constructor(map, food, point) {
         this.#map = map
         this.#food = food
+        this.#point = point
     }
 
     initSnake() {
@@ -77,7 +79,7 @@ export default class Snake {
     }
 
     eatFood(foodCords) {
-        //add point
+        this.#point.addPoint()
         this.#food.deleteFood(foodCords)
         this.#food.generateFoodCords()
         this.#food.addFood()
