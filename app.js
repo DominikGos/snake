@@ -12,6 +12,8 @@ let gameIsLost = false
 const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
 food.generateFoodCords(Snake.snakeDiameter);
 food.addFood()
+const resetButton = document.querySelector('#resetButton')
+resetButton.style.display = 'none'
 
 document.addEventListener('keydown', function (e) {
     if( ! gameIsLost) {
@@ -29,4 +31,5 @@ map.map.addEventListener('snakeDied', function(e) {
     gameIsLost = true
     clearInterval(intervalId)
     myModal.show()
+    resetButton.style.display = 'block'
 })
