@@ -8,7 +8,7 @@ export default class Snake {
     }
     static snakeDiameter = 50
     static snakeDelay = 10
-    static snakeSpeed = 2
+    static snakeSpeed = 5
 
     constructor(map, food) {
         this.#map = map

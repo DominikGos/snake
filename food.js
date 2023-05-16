@@ -1,5 +1,7 @@
+import Map from "./map.js"
+
 export default class Food {
-    #map 
+    #map
     cords = {
         x: null,
         y: null
@@ -7,7 +9,7 @@ export default class Food {
     #snakeDiameter
 
     constructor(map, snakeDiameter) {
-        this.#map = map 
+        this.#map = map
         this.#snakeDiameter = snakeDiameter
     }
 
@@ -20,9 +22,8 @@ export default class Food {
     }
 
     generateFoodCords() {
-        const mapDiameter = this.#map.map.offsetWidth
-        this.cords.x = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
-        this.cords.y = this.#snakeDiameter * Math.floor(Math.random() * mapDiameter / this.#snakeDiameter);
+        this.cords.x = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
+        this.cords.y = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
     }
 
     deleteFood(cords) {

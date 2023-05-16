@@ -2,9 +2,12 @@ import Snake from './snake.js';
 
 export default class Map {
     map
+    static mapDiameter = 800
 
     initMap() {
         this.map = document.querySelector('#map')
+        this.map.style.width = Map.mapDiameter + 'px'
+        this.map.style.height = Map.mapDiameter + 'px'
     }
 
     checkIfSnakeCanChangeDirection(cords) {
@@ -26,9 +29,7 @@ export default class Map {
     }
 
     checkIfSnakeDied(cords) {
-        const mapWidth = this.map.offsetWidth
-
-        if (cords.x < 0 || cords.x + Snake.snakeDiameter > mapWidth || cords.y < 0 || cords.y + Snake.snakeDiameter > mapWidth) {
+        if (cords.x < 0 || cords.x + Snake.snakeDiameter > Map.mapDiameter || cords.y < 0 || cords.y + Snake.snakeDiameter > Map.mapDiameter) {
 
             this.#dispatchSnakeDiedEvent()
             //display modal 
