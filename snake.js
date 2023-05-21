@@ -1,5 +1,5 @@
 export default class Snake {
-    #snakeHead
+    snakeHead
     #food
     #map
     #point
@@ -7,10 +7,10 @@ export default class Snake {
         previous: null,
         current: null
     }
-    #snakeHeadCordsHistory = []
+    #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 50
+    static snakeDelay = 10
     static snakeSpeed = 5
 
     constructor(map, food, point) {
@@ -20,9 +20,15 @@ export default class Snake {
     }
 
     initSnakeHead() {
-        this.#snakeHead = document.querySelector('.snake')
-        this.#snakeHead.style.width = Snake.snakeDiameter + 'px'
-        this.#snakeHead.style.height = Snake.snakeDiameter + 'px'
+        this.snakeHead = document.querySelector('.snake')
+        this.snakeHead.style.width = Snake.snakeDiameter + 'px'
+        this.snakeHead.style.height = Snake.snakeDiameter + 'px'
+    }
+
+    resetSnake() {
+        this.#snakeHeadCoordsHistory = []
+        this.#snakeBodyElements.forEach(element => element.remove())
+        this.#snakeBodyElements = []
     }
 
     #setSnakeBody() {
@@ -31,8 +37,8 @@ export default class Snake {
         this.#snakeBodyElements = snakeBodyElements
     }
 
-    getSnakeHeadCords() {
-        const snakeRect = this.#snakeHead.getBoundingClientRect();
+    getSnakeHeadCoords() {
+        const snakeRect = this.snakeHead.getBoundingClientRect();
         const mapRect = this.#map.map.getBoundingClientRect();
 
         return {
@@ -41,34 +47,38 @@ export default class Snake {
         };
     }
 
-    setSnakeCords(snakeElement, cords) {
-        snakeElement.style.top = cords.y + 'px';
-        snakeElement.style.left = cords.x + 'px';
+    setSnakeCoords(snakeElement, coords) {
+        snakeElement.style.top = coords.y + 'px';
+        snakeElement.style.left = coords.x + 'px';
     }
 
-    #setHeadCordsHistory(cords) {
-        this.#snakeHeadCordsHistory.push({x: cords.x, y: cords.y})
+    #setHeadCoordsHistory(coords) {
+        this.#snakeHeadCoordsHistory.push({x: coords.x, y: coords.y})
 
         //history has to be longer by only 1 field than snake body elements 
-        if(this.#snakeHeadCordsHistory.length === this.#snakeBodyElements.length + 2) {
-            this.#snakeHeadCordsHistory.shift()
+        if(this.#snakeHeadCoordsHistory.length === this.#snakeBodyElements.length + 2) {
+            this.#snakeHeadCoordsHistory.shift()
         } 
     }
 
-    moveSnakeHead(key, cords) {
+    moveSnakeHead(key, coords) {
         this.#keys.current = key
 
         return setInterval(() => {
-            const snakeCanChangeDirection = this.#map.checkIfSnakeCanChangeDirection(cords)
+            const snakeCanChangeDirection = this.#map.checkIfSnakeCanChangeDirection(coords)
+            let snakeBodyIntervalId = null 
 
             if (snakeCanChangeDirection) {
-                this.#setHeadCordsHistory(cords)
-                this.#compareFoodCords(cords, this.#food.cords)
-                this.#map.checkIfSnakeDied(cords)
+                this.#setHeadCoordsHistory(coords)
+                this.#compareFoodCoords(coords, this.#food.coords)
+                this.#map.checkIfSnakeDied(coords)
                 key = this.#keys.current
                 
                 if(this.#snakeBodyElements.length > 0) {
-                    this.#moveSnakeBody(this.#snakeHeadCordsHistory, key)
+                    if(snakeBodyIntervalId)
+                        clearInterval(snakeBodyIntervalId)
+
+                    snakeBodyIntervalId = this.#moveSnakeBody(this.#snakeHeadCoordsHistory, key)
                 }
 
             } else {
@@ -79,45 +89,63 @@ export default class Snake {
 
             switch (key) {
                 case 'a':
-                    cords.x -= Snake.snakeSpeed
+                    coords.x -= Snake.snakeSpeed
                     break;
                 case 'w':
-                    cords.y -= Snake.snakeSpeed
+                    coords.y -= Snake.snakeSpeed
                     break;
                 case 's':
-                    cords.y += Snake.snakeSpeed
+                    coords.y += Snake.snakeSpeed
                     break;
                 case 'd':
-                    cords.x += Snake.snakeSpeed
+                    coords.x += Snake.snakeSpeed
                     break;
             }
 
-            this.setSnakeCords(this.#snakeHead, cords)
+            this.setSnakeCoords(this.snakeHead, coords)
             
             this.#keys.previous = key
         }, Snake.snakeDelay);
     }
 
-    #moveSnakeBody(cords, key) {
-        console.log(key);
-        this.#snakeBodyElements.forEach((element, index) => {
-            this.setSnakeCords(element, cords[index])
-        })
-        
+    #moveSnakeBody(coords, key) {
+
+        //return setInterval(() => {
+            this.#snakeBodyElements.forEach((element, index) => {
+                this.setSnakeCoords(element, coords[index])
+            
+              /*   switch (key) {
+                    case 'a':
+                        coords[index].x -= Snake.snakeSpeed
+                        break;
+                    case 'w':
+                        coords[index].y -= Snake.snakeSpeed
+                        break;
+                    case 's':
+                        coords[index].y += Snake.snakeSpeed
+                        break;
+                    case 'd':
+                        coords[index].x += Snake.snakeSpeed
+                        break;
+                } */
+            })
+
+
+        //}, Snake.snakeDelay);
     }
 
-    #compareFoodCords(snakeCords, foodCords) {
-        if (snakeCords.x === foodCords.x && snakeCords.y === foodCords.y) {
-            this.#eatFood(foodCords)
+    #compareFoodCoords(snakeCoords, foodCoords) {
+        if (snakeCoords.x === foodCoords.x && snakeCoords.y === foodCoords.y) {
+            this.#eatFood(foodCoords)
         }
     }
 
-    #eatFood(foodCords) {
+    #eatFood(foodCoords) {
         this.#point.addPoint()
         this.#grow()
         this.#setSnakeBody()
-        this.#food.deleteFood(foodCords)
-        this.#food.generateFoodCords()
+        this.#food.deleteFood(foodCoords)
+        this.#food.generateFoodCoords()
         this.#food.addFood()
     }
 

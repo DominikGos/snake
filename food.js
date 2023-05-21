@@ -2,7 +2,7 @@ import Map from "./map.js"
 
 export default class Food {
     #map
-    cords = {
+    coords = {
         x: null,
         y: null
     }
@@ -14,20 +14,20 @@ export default class Food {
     }
 
     addFood() {
-        const foodId = `${this.cords.x} ${this.cords.y}`
+        const foodId = `${this.coords.x} ${this.coords.y}`
         const food = `
-            <div data-food-id="${foodId}" class="food bg-success rounded-3" style="top: ${this.cords.y}px; left: ${this.cords.x}px;"></div>
+            <div data-food-id="${foodId}" class="food bg-success rounded-3" style="top: ${this.coords.y}px; left: ${this.coords.x}px;"></div>
         `
         this.#map.map.insertAdjacentHTML('afterBegin', food)
     }
 
-    generateFoodCords() {
-        this.cords.x = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
-        this.cords.y = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
+    generateFoodCoords() {
+        this.coords.x = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
+        this.coords.y = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
     }
 
-    deleteFood(cords) {
-        const foodId = `${cords.x} ${cords.y}`
+    deleteFood(coords) {
+        const foodId = `${coords.x} ${coords.y}`
 
         const food = document.querySelector(`[data-food-id="${foodId}"]`);
         food.remove();

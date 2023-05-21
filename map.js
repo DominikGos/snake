@@ -2,7 +2,7 @@ import Snake from './snake.js';
 
 export default class Map {
     map
-    static mapDiameter = 500
+    static mapDiameter = 700
 
     initMap() {
         this.map = document.querySelector('#map')
@@ -10,16 +10,16 @@ export default class Map {
         this.map.style.height = Map.mapDiameter + 'px'
     }
 
-    checkIfSnakeCanChangeDirection(cords) {
-        const moduloX = cords.x % Snake.snakeDiameter
-        const moduloY = cords.y % Snake.snakeDiameter
+    checkIfSnakeCanChangeDirection(coords) {
+        const moduloX = coords.x % Snake.snakeDiameter
+        const moduloY = coords.y % Snake.snakeDiameter
         const moduloXisCorrect = moduloX === 0
         const moduloYisCorrect = moduloY === 0
 
         if (
-            (cords.x === 0 && cords.y === 0) ||
-            (cords.x === 0 && moduloYisCorrect) ||
-            (cords.y === 0 && moduloXisCorrect) ||
+            (coords.x === 0 && coords.y === 0) ||
+            (coords.x === 0 && moduloYisCorrect) ||
+            (coords.y === 0 && moduloXisCorrect) ||
             (moduloXisCorrect && moduloYisCorrect)
         ) {
             return true
@@ -28,8 +28,8 @@ export default class Map {
         return false
     }
 
-    checkIfSnakeDied(cords) {
-        if (cords.x < 0 || cords.x + Snake.snakeDiameter > Map.mapDiameter || cords.y < 0 || cords.y + Snake.snakeDiameter > Map.mapDiameter) {
+    checkIfSnakeDied(coords) {
+        if (coords.x < 0 || coords.x + Snake.snakeDiameter > Map.mapDiameter || coords.y < 0 || coords.y + Snake.snakeDiameter > Map.mapDiameter) {
 
             this.#dispatchSnakeDiedEvent()
             //display modal 
