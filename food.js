@@ -16,7 +16,9 @@ export default class Food {
     addFood() {
         const foodId = `${this.coords.x} ${this.coords.y}`
         const food = `
-            <div data-food-id="${foodId}" class="food bg-success rounded-3" style="top: ${this.coords.y}px; left: ${this.coords.x}px;"></div>
+            <div data-food-id="${foodId}" style="top: ${this.coords.y}px; left: ${this.coords.x}px;" class="food d-flex justify-content-center align-items-center">
+                <div class="food-body bg-success rounded-3"></div>
+            </div>
         `
         this.#map.map.insertAdjacentHTML('afterBegin', food)
     }

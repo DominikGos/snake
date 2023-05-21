@@ -17,9 +17,9 @@
     opacity: 0;
 }
 
-.food {
-    box-sizing: border-box;
-    padding: 10px;
+.food > .food-body {
+    width: 44px;
+    height: 44px;
 }
 
 @keyframes blockAppeared {
