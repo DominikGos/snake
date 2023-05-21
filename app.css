@@ -10,19 +10,19 @@
     width: 50px;
     height: 50px;
     position: absolute;
-}
-
-.food {
-    opacity: 0;
-    box-sizing: border-box;
-    padding: 10px;
-    animation-name: foodAppeared;
+    animation-name: blockAppeared;
     animation-duration: .2s;
     animation-delay: .2s;
     animation-fill-mode:forwards ;
+    opacity: 0;
 }
 
-@keyframes foodAppeared {
+.food {
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+@keyframes blockAppeared {
     from {
         opacity: 0;
     }

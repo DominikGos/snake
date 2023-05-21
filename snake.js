@@ -93,11 +93,11 @@ export default class Snake {
 
             this.setSnakeCords(this.#snakeHead, cords)
             
-            /* if(this.#snakeBodyElements.length > 0) {
+            if(this.#snakeBodyElements.length > 0) {
                 if(this.#snakeHeadCordsHistory[1]) {
                     this.#moveSnakeBody(this.#snakeHeadCordsHistory[1], key)
                 } 
-            } */
+            }
 
             this.#keys.previous = key
         }, Snake.snakeDelay);
