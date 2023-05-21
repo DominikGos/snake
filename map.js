@@ -2,7 +2,7 @@ import Snake from './snake.js';
 
 export default class Map {
     map
-    static mapDiameter = 800
+    static mapDiameter = 700
 
     initMap() {
         this.map = document.querySelector('#map')

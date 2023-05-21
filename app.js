@@ -9,7 +9,7 @@ const point = new Point
 point.initPointCounter() 
 const food = new Food(map, Snake.snakeDiameter)
 const snake = new Snake(map, food, point)
-snake.initSnake()
+snake.initSnakeHead()
 let intervalId = null
 let gameIsLost = false
 const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
@@ -19,14 +19,16 @@ const modalButton = document.querySelector('#modalButton')
 const resetButton = document.querySelector('#resetButton')
 
 document.addEventListener('keydown', function (e) {
+    let key = transformKey(e.key)
+
     if( ! gameIsLost) {
-        let snakeCords = snake.getSnakeCords()
+        let snakeCords = snake.getSnakeHeadCords()
     
         if (intervalId) {
             clearInterval(intervalId)
         } 
     
-        intervalId = snake.moveSnake(e.key, snakeCords)
+        intervalId = snake.moveSnakeHead(key, snakeCords)
     }
 });
 
@@ -43,4 +45,23 @@ function resetGame() {
     snake.setSnakeCords({x: 0, y: 0})
     gameIsLost = false
     myModal.hide()
+}
+
+function transformKey(key) {
+    switch (key) {
+        case 'ArrowLeft':
+            key = 'a'
+            break;
+        case 'ArrowUp':
+            key = 'w'
+            break;
+        case 'ArrowRight':
+            key = 'd'
+            break;
+        case 'ArrowDown':
+            key = 's'
+            break;
+    }
+
+    return key
 }

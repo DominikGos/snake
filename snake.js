@@ -1,5 +1,5 @@
 export default class Snake {
-    #snake
+    #snakeHead
     #food
     #map
     #point
@@ -7,8 +7,10 @@ export default class Snake {
         previous: null,
         current: null
     }
+    #snakeHeadCordsHistory = []
+    #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 10
+    static snakeDelay = 50
     static snakeSpeed = 5
 
     constructor(map, food, point) {
@@ -17,14 +19,22 @@ export default class Snake {
         this.#point = point
     }
 
-    initSnake() {
-        this.#snake = document.querySelector('#snake')
-        this.#snake.style.width = Snake.snakeDiameter + 'px'
-        this.#snake.style.height = Snake.snakeDiameter + 'px'
+    initSnakeHead() {
+        this.#snakeHead = document.querySelector('.snake')
+        this.#snakeHead.style.width = Snake.snakeDiameter + 'px'
+        this.#snakeHead.style.height = Snake.snakeDiameter + 'px'
     }
 
-    getSnakeCords() {
-        const snakeRect = this.#snake.getBoundingClientRect();
+    #setSnakeBody() {
+        let snakeBodyElements = Array.from(document.querySelectorAll('.snake')) 
+
+        snakeBodyElements.shift()
+        
+        this.#snakeBodyElements = snakeBodyElements
+    }
+
+    getSnakeHeadCords() {
+        const snakeRect = this.#snakeHead.getBoundingClientRect();
         const mapRect = this.#map.map.getBoundingClientRect();
 
         return {
@@ -33,17 +43,33 @@ export default class Snake {
         };
     }
 
-    setSnakeCords(cords) {
-        this.#snake.style.top = cords.y + 'px';
-        this.#snake.style.left = cords.x + 'px';
+    setSnakeCords(snakeElement, cords) {
+        snakeElement.style.top = cords.y + 'px';
+        snakeElement.style.left = cords.x + 'px';
     }
 
-    moveSnake(key, cords) {
-        this.#keys.current = key 
+    #setHeadCordsHistory(cords) {
+        this.#snakeHeadCordsHistory.push({x: cords.x, y: cords.y})
+
+        //history has to be longer by only 1 field
+        if(this.#snakeHeadCordsHistory.length === this.#snakeBodyElements.length + 2) {
+            this.#snakeHeadCordsHistory.shift()
+        } 
+    }
+
+    moveSnakeHead(key, cords) {
+        this.#keys.current = key
 
         return setInterval(() => {
-            if (this.#map.checkIfSnakeCanChangeDirection(cords)) {
+            const snakeCanChangeDirection = this.#map.checkIfSnakeCanChangeDirection(cords)
+
+            if (snakeCanChangeDirection) {
+                this.#setHeadCordsHistory(cords)
+                this.#compareFoodCords(cords, this.#food.cords)
+                this.#map.checkIfSnakeDied(cords)
                 key = this.#keys.current
+                
+                console.table(this.#snakeHeadCordsHistory);
             } else {
                 key = this.#keys.previous
                     ? key = this.#keys.previous
@@ -65,23 +91,43 @@ export default class Snake {
                     break;
             }
 
-            this.#keys.previous = key 
-            this.setSnakeCords(cords)
-            this.compareFoodCords(cords, this.#food.cords)
-            this.#map.checkIfSnakeDied(cords)
+            this.setSnakeCords(this.#snakeHead, cords)
+            
+            /* if(this.#snakeBodyElements.length > 0) {
+                if(this.#snakeHeadCordsHistory[1]) {
+                    this.#moveSnakeBody(this.#snakeHeadCordsHistory[1], key)
+                } 
+            } */
+
+            this.#keys.previous = key
         }, Snake.snakeDelay);
     }
 
-    compareFoodCords(snakeCords, foodCords) {
+    #moveSnakeBody(cords, key) {
+        this.#snakeBodyElements.forEach(element => {
+            this.setSnakeCords(element, cords)
+        })
+        
+    }
+
+    #compareFoodCords(snakeCords, foodCords) {
         if (snakeCords.x === foodCords.x && snakeCords.y === foodCords.y) {
-            this.eatFood(foodCords)
+            this.#eatFood(foodCords)
         }
     }
 
-    eatFood(foodCords) {
+    #eatFood(foodCords) {
         this.#point.addPoint()
+        this.#grow()
+        this.#setSnakeBody()
         this.#food.deleteFood(foodCords)
         this.#food.generateFoodCords()
         this.#food.addFood()
+    }
+
+    #grow() {
+        const snakeBody = `<div class="snake bg-danger rounded-3"  data-number="${this.#point.points}"></div>`
+
+        this.#map.map.insertAdjacentHTML('beforeEnd', snakeBody)
     }
 }
