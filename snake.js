@@ -27,9 +27,7 @@ export default class Snake {
 
     #setSnakeBody() {
         let snakeBodyElements = Array.from(document.querySelectorAll('.snake')) 
-
         snakeBodyElements.shift()
-        
         this.#snakeBodyElements = snakeBodyElements
     }
 
@@ -51,7 +49,7 @@ export default class Snake {
     #setHeadCordsHistory(cords) {
         this.#snakeHeadCordsHistory.push({x: cords.x, y: cords.y})
 
-        //history has to be longer by only 1 field
+        //history has to be longer by only 1 field than snake body elements 
         if(this.#snakeHeadCordsHistory.length === this.#snakeBodyElements.length + 2) {
             this.#snakeHeadCordsHistory.shift()
         } 
@@ -69,7 +67,10 @@ export default class Snake {
                 this.#map.checkIfSnakeDied(cords)
                 key = this.#keys.current
                 
-                console.table(this.#snakeHeadCordsHistory);
+                if(this.#snakeBodyElements.length > 0) {
+                    this.#moveSnakeBody(this.#snakeHeadCordsHistory, key)
+                }
+
             } else {
                 key = this.#keys.previous
                     ? key = this.#keys.previous
@@ -93,19 +94,14 @@ export default class Snake {
 
             this.setSnakeCords(this.#snakeHead, cords)
             
-            if(this.#snakeBodyElements.length > 0) {
-                if(this.#snakeHeadCordsHistory[1]) {
-                    this.#moveSnakeBody(this.#snakeHeadCordsHistory[1], key)
-                } 
-            }
-
             this.#keys.previous = key
         }, Snake.snakeDelay);
     }
 
     #moveSnakeBody(cords, key) {
-        this.#snakeBodyElements.forEach(element => {
-            this.setSnakeCords(element, cords)
+        console.log(key);
+        this.#snakeBodyElements.forEach((element, index) => {
+            this.setSnakeCords(element, cords[index])
         })
         
     }
@@ -126,7 +122,7 @@ export default class Snake {
     }
 
     #grow() {
-        const snakeBody = `<div class="snake bg-danger rounded-3"  data-number="${this.#point.points}"></div>`
+        const snakeBody = `<div class="snake bg-danger rounded-3"  data-number="${this.#point.points}">${this.#point.points}</div>`
 
         this.#map.map.insertAdjacentHTML('beforeEnd', snakeBody)
     }
