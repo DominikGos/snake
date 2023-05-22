@@ -10,6 +10,7 @@ point.initPointCounter()
 const food = new Food(map, Snake.snakeDiameter)
 const snake = new Snake(map, food, point)
 snake.initSnakeHead()
+snake.setDefaultSnakePosition()
 let intervalId = null
 let gameIsLost = false
 const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
@@ -43,7 +44,7 @@ resetButton.addEventListener('click', resetGame)
 function resetGame() {
     snake.resetSnake()
     point.resetPoints()
-    snake.setSnakeCoords(snake.snakeHead, {x: 0, y: 0})
+    snake.setDefaultSnakePosition()
     gameIsLost = false
     myModal.hide()
 }

@@ -10,13 +10,18 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 250
-    static snakeSpeed = 50
+    static snakeDelay = 10
+    static snakeSpeed = 5
 
     constructor(map, food, point) {
         this.#map = map
         this.#food = food
         this.#point = point
+    }
+
+    setDefaultSnakePosition() {
+        this.snakeHead.style.top = `50%`
+        this.snakeHead.style.left = `50%`
     }
 
     initSnakeHead() {
@@ -72,7 +77,6 @@ export default class Snake {
                 this.#compareFoodCoords(coords, this.#food.coords)
                 this.#map.checkIfSnakeDied(coords)
                 key = this.#keys.current
-                console.table(this.#snakeHeadCoordsHistory);
                 if(this.#snakeBodyElements.length > 0) {
                     this.#moveSnakeBody(this.#snakeHeadCoordsHistory, key)
                 }
