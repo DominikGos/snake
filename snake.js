@@ -10,8 +10,8 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 10
-    static snakeSpeed = 5
+    static snakeDelay = 250
+    static snakeSpeed = 50
 
     constructor(map, food, point) {
         this.#map = map
@@ -53,11 +53,11 @@ export default class Snake {
     }
 
     #setHeadCoordsHistory(coords) {
-        this.#snakeHeadCoordsHistory.push({x: coords.x, y: coords.y})
+        this.#snakeHeadCoordsHistory.unshift({x: coords.x, y: coords.y})
 
         //history has to be longer by only 1 field than snake body elements 
         if(this.#snakeHeadCoordsHistory.length === this.#snakeBodyElements.length + 2) {
-            this.#snakeHeadCoordsHistory.shift()
+            this.#snakeHeadCoordsHistory.pop()
         } 
     }
 
@@ -66,19 +66,15 @@ export default class Snake {
 
         return setInterval(() => {
             const snakeCanChangeDirection = this.#map.checkIfSnakeCanChangeDirection(coords)
-            let snakeBodyIntervalId = null 
 
             if (snakeCanChangeDirection) {
                 this.#setHeadCoordsHistory(coords)
                 this.#compareFoodCoords(coords, this.#food.coords)
                 this.#map.checkIfSnakeDied(coords)
                 key = this.#keys.current
-                
+                console.table(this.#snakeHeadCoordsHistory);
                 if(this.#snakeBodyElements.length > 0) {
-                    if(snakeBodyIntervalId)
-                        clearInterval(snakeBodyIntervalId)
-
-                    snakeBodyIntervalId = this.#moveSnakeBody(this.#snakeHeadCoordsHistory, key)
+                    this.#moveSnakeBody(this.#snakeHeadCoordsHistory, key)
                 }
 
             } else {
@@ -109,29 +105,9 @@ export default class Snake {
     }
 
     #moveSnakeBody(coords, key) {
-
-        //return setInterval(() => {
-            this.#snakeBodyElements.forEach((element, index) => {
-                this.setSnakeCoords(element, coords[index])
-            
-              /*   switch (key) {
-                    case 'a':
-                        coords[index].x -= Snake.snakeSpeed
-                        break;
-                    case 'w':
-                        coords[index].y -= Snake.snakeSpeed
-                        break;
-                    case 's':
-                        coords[index].y += Snake.snakeSpeed
-                        break;
-                    case 'd':
-                        coords[index].x += Snake.snakeSpeed
-                        break;
-                } */
-            })
-
-
-        //}, Snake.snakeDelay);
+        this.#snakeBodyElements.forEach((element, index) => {
+            this.setSnakeCoords(element, coords[index])
+        })
     }
 
     #compareFoodCoords(snakeCoords, foodCoords) {
