@@ -13,13 +13,16 @@
     animation-name: blockAppeared;
     animation-duration: .2s;
     animation-delay: .2s;
-    animation-fill-mode:forwards ;
+    animation-fill-mode: forwards;
     opacity: 0;
 }
 
-.food > .food-body {
+.food>.food-body {
     width: 44px;
     height: 44px;
+    -webkit-box-shadow: -2px 3px 13px -5px rgba(37, 245, 25, 1);
+    -moz-box-shadow: -2px 3px 13px -5px rgba(37, 245, 25, 1);
+    box-shadow: -2px 3px 13px -5px rgba(37, 245, 25, 1);
 }
 
 @keyframes blockAppeared {
