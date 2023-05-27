@@ -1,4 +1,5 @@
 import Map from "./map.js"
+import Snake from './snake.js';
 
 export default class Food {
     #map
@@ -6,11 +7,9 @@ export default class Food {
         x: null,
         y: null
     }
-    #snakeDiameter
 
-    constructor(map, snakeDiameter) {
+    constructor(map) {
         this.#map = map
-        this.#snakeDiameter = snakeDiameter
     }
 
     addFood() {
@@ -24,8 +23,8 @@ export default class Food {
     }
 
     generateFoodCoords() {
-        this.coords.x = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
-        this.coords.y = this.#snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / this.#snakeDiameter);
+        this.coords.x = Snake.snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / Snake.snakeDiameter);
+        this.coords.y = Snake.snakeDiameter * Math.floor(Math.random() * Map.mapDiameter / Snake.snakeDiameter);
     }
 
     deleteFood(coords) {

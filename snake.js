@@ -12,7 +12,7 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 200 
+    static snakeDelay = 100
     static snakeSpeed = Snake.snakeDiameter
 
     constructor(map, food, point) {
@@ -36,6 +36,8 @@ export default class Snake {
         this.#snakeHeadCoordsHistory = []
         this.#snakeBodyElements.forEach(element => element.remove())
         this.#snakeBodyElements = []
+        this.#keys.current = null 
+        this.#keys.previous = null 
     }
 
     #setSnakeBody() {
@@ -73,7 +75,11 @@ export default class Snake {
 
         return setInterval(() => {
             this.#setHeadCoordsHistory(coords)
-            
+
+            if (!this.#checkIfItCorrectMove(this.#keys)) {
+                key = this.#keys.previous
+            }
+
             switch (key) {
                 case 'a':
                     coords.x -= Snake.snakeSpeed
@@ -91,20 +97,39 @@ export default class Snake {
 
             this.setSnakeCoords(this.snakeHead, coords)
             this.#checkIfSnakeAteFood(coords, this.#food.coords)
-            this.#checkIfSnakeAteHisTail(this.getSnakeHeadCoords(), this.#snakeHeadCoordsHistory)
             this.#map.checkIfSnakeExceededMap(coords)
 
             if (this.#snakeBodyElements.length > 0) {
+                this.#checkIfSnakeAteHisTail(this.getSnakeHeadCoords(), this.#snakeHeadCoordsHistory)
                 this.#moveSnakeBody(this.#snakeHeadCoordsHistory)
             }
+
+            this.#keys.previous = key
 
         }, Snake.snakeDelay);
     }
 
-    #moveSnakeBody(coords) {
+    #moveSnakeBody(coordsHistory) {
         this.#snakeBodyElements.forEach((element, index) => {
-            this.setSnakeCoords(element, coords[index])
+            this.setSnakeCoords(element, coordsHistory[index])
         })
+    }
+
+    #checkIfItCorrectMove(keys) {
+        if (keys.previous === 'a' && keys.current === 'd') {
+            return false
+        }
+        else if (keys.previous === 'd' && keys.current === 'a') {
+            return false
+        }
+        else if (keys.previous === 'w' && keys.current === 's') {
+            return false
+        }
+        else if (keys.previous === 's' && keys.current === 'w') {
+            return false
+        }
+
+        return true
     }
 
     #checkIfSnakeAteFood(snakeCoords, foodCoords) {
@@ -129,13 +154,10 @@ export default class Snake {
     }
 
     #checkIfSnakeAteHisTail(snakeHeadCoords, coordsHistory) {
-        if (this.#snakeBodyElements.length > 0) {
-            coordsHistory.forEach(singleCoords => {
-                if(snakeHeadCoords.x === singleCoords.x && snakeHeadCoords.y === singleCoords.y) {
-                    dispatchSnakeDiedEvent(this.#map.map)
-                }
-            });
-
-        }
+        coordsHistory.forEach(singleCoords => {
+            if (snakeHeadCoords.x === singleCoords.x && snakeHeadCoords.y === singleCoords.y) {
+                dispatchSnakeDiedEvent(this.#map.map)
+            }
+        });
     }
 }
