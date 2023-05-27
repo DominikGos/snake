@@ -1,3 +1,5 @@
+import { dispatchSnakeDiedEvent } from './events/snakeDeath.js';
+
 export default class Snake {
     snakeHead
     #food
@@ -10,7 +12,7 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 150 
+    static snakeDelay = 200 
     static snakeSpeed = Snake.snakeDiameter
 
     constructor(map, food, point) {
@@ -71,7 +73,6 @@ export default class Snake {
 
         return setInterval(() => {
             this.#setHeadCoordsHistory(coords)
-            this.#compareFoodCoords(coords, this.#food.coords)
             
             switch (key) {
                 case 'a':
@@ -89,7 +90,9 @@ export default class Snake {
             }
 
             this.setSnakeCoords(this.snakeHead, coords)
-            this.#map.checkIfSnakeDied(coords)
+            this.#checkIfSnakeAteFood(coords, this.#food.coords)
+            this.#checkIfSnakeAteHisTail(this.getSnakeHeadCoords(), this.#snakeHeadCoordsHistory)
+            this.#map.checkIfSnakeExceededMap(coords)
 
             if (this.#snakeBodyElements.length > 0) {
                 this.#moveSnakeBody(this.#snakeHeadCoordsHistory)
@@ -104,7 +107,7 @@ export default class Snake {
         })
     }
 
-    #compareFoodCoords(snakeCoords, foodCoords) {
+    #checkIfSnakeAteFood(snakeCoords, foodCoords) {
         if (snakeCoords.x === foodCoords.x && snakeCoords.y === foodCoords.y) {
             this.#eatFood(foodCoords)
         }
@@ -123,5 +126,16 @@ export default class Snake {
         const snakeBody = `<div class="snake bg-danger rounded-3"></div>`
 
         this.#map.map.insertAdjacentHTML('beforeEnd', snakeBody)
+    }
+
+    #checkIfSnakeAteHisTail(snakeHeadCoords, coordsHistory) {
+        if (this.#snakeBodyElements.length > 0) {
+            coordsHistory.forEach(singleCoords => {
+                if(snakeHeadCoords.x === singleCoords.x && snakeHeadCoords.y === singleCoords.y) {
+                    dispatchSnakeDiedEvent(this.#map.map)
+                }
+            });
+
+        }
     }
 }
