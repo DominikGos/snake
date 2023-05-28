@@ -12,8 +12,7 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 150
-    static snakeSpeed = Snake.snakeDiameter
+    static snakeDelay = 100
 
     constructor(map, food, point) {
         this.#map = map
@@ -74,42 +73,25 @@ export default class Snake {
         this.#keys.current = key
 
         return setInterval(() => {
+            const snakeHasBody = this.#snakeBodyElements.length > 0
             this.#setHeadCoordsHistory(coords)
 
-            if (!this.#checkIfItCorrectMove(this.#keys)) {
+            if (!this.#checkIfItCorrectMove(this.#keys)) 
                 key = this.#keys.previous
-            }
 
-            switch (key) {
-                case 'a':
-                    coords.x -= Snake.snakeSpeed
-                    break;
-                case 'w':
-                    coords.y -= Snake.snakeSpeed
-                    break;
-                case 's':
-                    coords.y += Snake.snakeSpeed
-                    break;
-                case 'd':
-                    coords.x += Snake.snakeSpeed
-                    break;
-            }
+            this.#setCoords(coords, key)
 
-            if (this.#map.checkIfSnakeExceededMap(coords)) {
+            if (this.#map.checkIfSnakeExceededMap(coords))
                 return
-            }
+
+            if (snakeHasBody && this.#checkIfSnakeAteHisBody(coords, this.#snakeHeadCoordsHistory)) 
+                return
 
             this.#checkIfSnakeAteFood(coords, this.#food.coords)
-
-            if (this.#snakeBodyElements.length > 0) {
-                if (this.#checkIfSnakeAteHisTail(coords, this.#snakeHeadCoordsHistory)) {
-                    return 
-                } 
-
-                this.setSnakeCoords(this.snakeHead, coords)
+            this.setSnakeCoords(this.snakeHead, coords)
+            
+            if(snakeHasBody) 
                 this.#moveSnakeBody(this.#snakeHeadCoordsHistory)
-            } else
-                this.setSnakeCoords(this.snakeHead, coords)
 
             this.#keys.previous = key
 
@@ -120,6 +102,23 @@ export default class Snake {
         this.#snakeBodyElements.forEach((element, index) => {
             this.setSnakeCoords(element, coordsHistory[index])
         })
+    }
+
+    #setCoords(coords, key) {
+        switch (key) {
+            case 'a':
+                coords.x -= Snake.snakeDiameter
+                break;
+            case 'w':
+                coords.y -= Snake.snakeDiameter
+                break;
+            case 's':
+                coords.y += Snake.snakeDiameter
+                break;
+            case 'd':
+                coords.x += Snake.snakeDiameter
+                break;
+        }
     }
 
     #checkIfItCorrectMove(keys) {
@@ -164,7 +163,7 @@ export default class Snake {
         this.#map.map.insertAdjacentHTML('beforeEnd', snakeBody)
     }
 
-    #checkIfSnakeAteHisTail(snakeHeadCoords, coordsHistory) {
+    #checkIfSnakeAteHisBody(snakeHeadCoords, coordsHistory) {
         let snakeAteHisTail = false
 
         coordsHistory.forEach(singleCoords => {
