@@ -13,8 +13,11 @@ export default class Map {
 
     checkIfSnakeExceededMap(coords) {
         if (coords.x < 0 || coords.x + Snake.snakeDiameter > Map.mapDiameter || coords.y < 0 || coords.y + Snake.snakeDiameter > Map.mapDiameter) {
-
             dispatchSnakeDiedEvent(this.map)
+
+            return true
         }
+
+        return false
     }
 }

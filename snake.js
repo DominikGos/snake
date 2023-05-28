@@ -12,7 +12,7 @@ export default class Snake {
     #snakeHeadCoordsHistory = []
     #snakeBodyElements = []
     static snakeDiameter = 50
-    static snakeDelay = 100
+    static snakeDelay = 150
     static snakeSpeed = Snake.snakeDiameter
 
     constructor(map, food, point) {
@@ -36,8 +36,8 @@ export default class Snake {
         this.#snakeHeadCoordsHistory = []
         this.#snakeBodyElements.forEach(element => element.remove())
         this.#snakeBodyElements = []
-        this.#keys.current = null 
-        this.#keys.previous = null 
+        this.#keys.current = null
+        this.#keys.previous = null
     }
 
     #setSnakeBody() {
@@ -95,14 +95,21 @@ export default class Snake {
                     break;
             }
 
-            this.setSnakeCoords(this.snakeHead, coords)
+            if (this.#map.checkIfSnakeExceededMap(coords)) {
+                return
+            }
+
             this.#checkIfSnakeAteFood(coords, this.#food.coords)
-            this.#map.checkIfSnakeExceededMap(coords)
 
             if (this.#snakeBodyElements.length > 0) {
-                this.#checkIfSnakeAteHisTail(this.getSnakeHeadCoords(), this.#snakeHeadCoordsHistory)
+                if (this.#checkIfSnakeAteHisTail(coords, this.#snakeHeadCoordsHistory)) {
+                    return 
+                } 
+
+                this.setSnakeCoords(this.snakeHead, coords)
                 this.#moveSnakeBody(this.#snakeHeadCoordsHistory)
-            }
+            } else
+                this.setSnakeCoords(this.snakeHead, coords)
 
             this.#keys.previous = key
 
@@ -116,6 +123,10 @@ export default class Snake {
     }
 
     #checkIfItCorrectMove(keys) {
+        if (!['a', 'w', 's', 'd'].includes(keys.current)) {
+            return false
+        }
+
         if (keys.previous === 'a' && keys.current === 'd') {
             return false
         }
@@ -154,10 +165,15 @@ export default class Snake {
     }
 
     #checkIfSnakeAteHisTail(snakeHeadCoords, coordsHistory) {
+        let snakeAteHisTail = false
+
         coordsHistory.forEach(singleCoords => {
             if (snakeHeadCoords.x === singleCoords.x && snakeHeadCoords.y === singleCoords.y) {
                 dispatchSnakeDiedEvent(this.#map.map)
+                snakeAteHisTail = true
             }
         });
+
+        return snakeAteHisTail
     }
 }

@@ -7,7 +7,7 @@ const map = new Map;
 map.initMap()
 const point = new Point
 point.initPointCounter() 
-const food = new Food(map, Snake.snakeDiameter)
+const food = new Food(map)
 const snake = new Snake(map, food, point)
 snake.initSnakeHead()
 snake.setDefaultSnakePosition()
@@ -16,21 +16,38 @@ let gameIsLost = false
 const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
 food.generateFoodCoords(Snake.snakeDiameter);
 food.addFood()
-const modalButton = document.querySelector('#modalButton')
 const resetButton = document.querySelector('#resetButton')
+let timeElapsed = null 
+let start = null
+let end = null 
 
 document.addEventListener('keydown', function (e) {
+    if(gameIsLost) {
+        return
+    }
+
+    end = Date.now();
+    
+    if(start === null) {
+        timeElapsed = Snake.snakeDelay + 1
+    } else {
+        timeElapsed = end - start;
+    }
+
     let key = transformKey(e.key)
 
-    if( ! gameIsLost) {
+    if(timeElapsed > Snake.snakeDelay) {
+
         let snakeCoords = snake.getSnakeHeadCoords()
-    
+        
         if (intervalId) {
             clearInterval(intervalId)
         } 
     
         intervalId = snake.moveSnakeHead(key, snakeCoords)
     }
+
+    start = Date.now();
 });
 
 map.map.addEventListener('snakeDied', function(e) {
@@ -64,6 +81,8 @@ function transformKey(key) {
             key = 's'
             break;
     }
+
+    key = key.toLowerCase()
 
     return key
 }
