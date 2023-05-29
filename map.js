@@ -1,4 +1,4 @@
-import Snake from './snake.js';
+import Snake from './snake/snake.js';
 import { dispatchSnakeDiedEvent } from './events/snakeDeath.js';
 
 export default class Map {

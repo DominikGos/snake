@@ -11,7 +11,7 @@
     height: 50px;
     position: absolute;
     animation-name: blockAppeared;
-    animation-duration: .2s;
+    animation-duration: .5s;
     animation-delay: .2s;
     animation-fill-mode: forwards;
     opacity: 0;

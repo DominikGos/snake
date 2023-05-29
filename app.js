@@ -1,5 +1,5 @@
 import Map from './map.js';
-import Snake from './snake.js';
+import Snake from './snake/snake.js';
 import Food from './food.js'
 import Point from './point.js';
 

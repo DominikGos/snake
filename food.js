@@ -1,5 +1,5 @@
 import Map from "./map.js"
-import Snake from './snake.js';
+import Snake from './snake/snake.js';
 
 export default class Food {
     #map
