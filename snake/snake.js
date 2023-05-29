@@ -33,6 +33,7 @@ export default class Snake extends SnakeBody {
         this.snakeBodyElements = []
         this.#keys.current = null
         this.#keys.previous = null
+        this.setDefaultSnakePosition()
     }
 
     getSnakeHeadCoords() {
